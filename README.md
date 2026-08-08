@@ -8,7 +8,7 @@ This project provides an end-to-end data engineering and analytics solution for 
 The visual insights are presented in the **AURA HR Attendance Dashboard (Bangalore Hub Spec V2)**.
 
 * **Live Report Link**: [Looker Studio Dashboard](https://datastudio.google.com/reporting/5c18b0fa-2c3f-462d-ad71-71d9b96c83df)
-* **Live Web Report Link**: [Python Dashboard]([https://datastudio.google.com/reporting/5c18b0fa-2c3f-462d-ad71-71d9b96c83df](https://bzso4ggrukphpnu7my7e3t.streamlit.app/))
+* **Live Web Report Link**: [Python Dashboard](https://bzso4ggrukphpnu7my7e3t.streamlit.app/)
 * **Dashboard Specifications Mockup**:
   ![AURA HR Attendance Dashboard](Dashboard/Screenshot%202026-08-08%20204907.png)
 
