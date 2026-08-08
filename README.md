@@ -4,7 +4,7 @@ This project provides an end-to-end data engineering and analytics solution for 
 
 ---
 
-## 📊 Live Executive Dashboard
+##  Live Executive Dashboard
 The visual insights are presented in the **AURA HR Attendance Dashboard (Bangalore Hub Spec V2)**.
 
 * **Live Report Link**: [Looker Studio Dashboard](https://datastudio.google.com/reporting/5c18b0fa-2c3f-462d-ad71-71d9b96c83df)
@@ -13,7 +13,7 @@ The visual insights are presented in the **AURA HR Attendance Dashboard (Bangalo
 
 ---
 
-## 🛠️ Project Pipeline Flowchart
+##  Project Pipeline Flowchart
 
 The following flowchart illustrates the step-by-step lifecycle of the data, from raw ingestion to the final dashboard reporting layer:
 
@@ -59,7 +59,7 @@ flowchart TD
 
 ---
 
-## 📂 Project Directory Structure
+##  Project Directory Structure
 
 ```text
 Emp_Attendance/
@@ -81,7 +81,7 @@ Emp_Attendance/
 
 ---
 
-## 🧼 Data Cleaning & Preprocessing Steps
+##  Data Cleaning & Preprocessing Steps
 
 The data cleaning notebook (`Data Cleaning/employee-attendance-data_cleaning.ipynb`) establishes the structural integrity of the dataset across the following steps:
 1. **ID Prefix Removal**: Stripped static string prefixes `ATT` and `VL` from `attendance_id` and `employee_id`, converting them to space-efficient `int64` integers.
@@ -93,7 +93,7 @@ The data cleaning notebook (`Data Cleaning/employee-attendance-data_cleaning.ipy
 
 ---
 
-## 📈 Exploratory Data Analysis & Statistical Tests
+##  Exploratory Data Analysis & Statistical Tests
 
 We performed five statistical tests using Python's `scipy.stats` library to evaluate workforce policies, shifts, and campus performance:
 
@@ -120,7 +120,7 @@ We performed five statistical tests using Python's `scipy.stats` library to eval
 
 ---
 
-## 📊 Core Key Performance Indicators (KPIs)
+##  Core Key Performance Indicators (KPIs)
 
 The following metrics are validated and reflected on the executive Looker Studio dashboard:
 
@@ -140,7 +140,7 @@ The following metrics are validated and reflected on the executive Looker Studio
 
 ---
 
-## 📜 Project Documentation References
+##  Project Documentation References
 
 Detailed breakdowns are available in the `Report/` directory:
 1. **[Project Development Guide](Report/Project_Development_Guide.md)**: Developer documentation detailing the raw inspection, cleaning scripts, and Scipy implementation.
