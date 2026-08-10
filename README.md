@@ -1,21 +1,37 @@
 # Employee Attendance & Productivity Analytics (Bangalore Hub - Q1 2026)
 
-This project provides an end-to-end data engineering and analytics solution for tracking, cleaning, analyzing, and visualizing employee attendance and login/logout patterns across five corporate campuses in Bangalore for Q1 2026. The final cleaned dataset is integrated with a Looker Studio dashboard to deliver executive-level HR insights.
+This project provides an end-to-end data engineering and analytics solution for tracking, cleaning, analyzing, and visualizing employee attendance and login/logout patterns across five corporate campuses in Bangalore for Q1 2026. The final cleaned dataset is integrated with a multi-page Looker Studio dashboard to deliver executive-level HR insights.
 
 ---
 
-##  Live Executive Dashboard
+## 📊 Live Executive Dashboard
 The visual insights are presented in the **AURA HR Attendance Dashboard (Bangalore Hub Spec V2)**.
 
 * **Live Report Link**: [Looker Studio Dashboard](https://datastudio.google.com/reporting/5c18b0fa-2c3f-462d-ad71-71d9b96c83df)
-* **Dashboard Specifications Mockup**:
-  ![AURA HR Attendance Dashboard](Dashboard/Screenshot%202026-08-08%20204907.png)
+
+### Dashboard Pages & Visual Layout
+
+#### 1. Page 1: Overview
+Offers a high-level summary of the entire organization's attendance and contract profiles.
+![Page 1: Overview](Dashboard/1.png)
+
+#### 2. Page 2: Department & Location Benchmarking
+Compares attendance behaviors and productivity metrics across departments, locations, and designations.
+![Page 2: Department & Location Benchmarking](Dashboard/2.png)
+
+#### 3. Page 3: Punctuality & Shift Pattern
+Focuses on shift start delays, late arrival patterns, and overtime distributions.
+![Page 3: Punctuality & Shift Pattern](Dashboard/3.png)
+
+#### 4. Page 4: Leave Productivity Insights
+Examines reasons for leave, correlation between employee tenure and efficiency, and contains an interactive employee search table.
+![Page 4: Leave Productivity Insights](Dashboard/4.png)
 
 ---
 
-##  Project Pipeline Flowchart
+## 🛠️ Project Pipeline Flowchart
 
-The following flowchart illustrates the step-by-step lifecycle of the data, from raw ingestion to the final dashboard reporting layer:
+The following flowchart illustrates the step-by-step lifecycle of the data, from raw ingestion, column engineering, and statistical testing, to the final dashboard reporting layer:
 
 ```mermaid
 flowchart TD
@@ -37,11 +53,12 @@ flowchart TD
         B2 --> B3[Split timestamps into Date & Time columns]
         B3 --> B4[Recalculate Gross & Net Productive Hours]
         B4 --> B5[Standardize casing & trim whitespaces]
-        B5 --> B6[Export Cleaned CSV]
+        B5 --> B6[Create Custom Calculated Columns: attendance_score, overtime_bin, tenure_days, productivity_ratio]
+        B6 --> B7[Export Cleaned CSV]
     end
 
     subgraph Phase 3: Exploratory Data Analysis & Hypothesis Testing
-        B6 --> C1[Cleaned Dataset]:::stats
+        B7 --> C1[Cleaned Dataset]:::stats
         C1 --> C2[Bivariate Scatter & Grouped Box Plots]
         C1 --> C3[Scipy Statistical Hypothesis Testing]
         C3 --> T1[Welch's T-Test: WFH vs WFO Productive Hours]
@@ -53,13 +70,13 @@ flowchart TD
 
     subgraph Phase 4: Reporting & Dashboarding
         T1 & T2 & T3 & T4 & T5 --> D1[Verify Dashboard KPIs]:::visual
-        D1 --> D2[Looker Studio Integration]
+        D1 --> D2[Looker Studio Integration: 4-Page Dashboard]
     end
 ```
 
 ---
 
-##  Project Directory Structure
+## 📂 Project Directory Structure
 
 ```text
 Emp_Attendance/
@@ -70,30 +87,38 @@ Emp_Attendance/
 │   └── employee-attendance-data_cleaning.ipynb                            # Preprocessing & cleaning notebook
 ├── Data Analysis/
 │   ├── employee-attendance-analysis-nabamit.ipynb                         # Full EDA & hypothesis testing notebook
-│   └── Bangalore_Attendance_Analytics.ipynb                               # Visualizations & baseline KPI scripts
+│   └── Bangalore_Attendance_Analytics.ipynb                               # Visualizations & baseline KPI scripts (Updated)
 ├── Dashboard/
-│   └── Screenshot 2026-08-08 204907.png                                   # Looker Studio dashboard mockup/spec
+│   ├── 1.png                                                              # Dashboard Page 1: Overview
+│   ├── 2.png                                                              # Dashboard Page 2: Benchmarking
+│   ├── 3.png                                                              # Dashboard Page 3: Punctuality
+│   └── 4.png                                                              # Dashboard Page 4: Leave & Productivity
 ├── Report/
 │   ├── Project_Development_Guide.md                                       # Developer development guide
-│   └── Executive_Analytics_Report.md                                      # Executive findings & statistical report
+│   └── Executive_Analytics_Report.md                                      # Executive findings & statistical report (Updated)
 └── README.md                                                              # Main project README (This file)
 ```
 
 ---
 
-##  Data Cleaning & Preprocessing Steps
+## 🧼 Data Cleaning & Custom Column Creation
 
-The data cleaning notebook (`Data Cleaning/employee-attendance-data_cleaning.ipynb`) establishes the structural integrity of the dataset across the following steps:
+The data pipeline notebook (`Data Cleaning/employee-attendance-data_cleaning.ipynb` and `Data Analysis/Bangalore_Attendance_Analytics.ipynb`) implements the following processing steps:
 1. **ID Prefix Removal**: Stripped static string prefixes `ATT` and `VL` from `attendance_id` and `employee_id`, converting them to space-efficient `int64` integers.
 2. **Missing Timestamps Check**: Verified that the 2,635 missing values in `login_timestamp` and `logout_timestamp` correspond exactly to days when employees were `"On Leave"`.
 3. **Timestamp Splitting**: Converted string timestamps into proper datetimes and split them into separate Date and Time columns (`login_date`, `login_time`, `logout_date`, and `logout_time`).
 4. **Recalculating Time Metrics**: Gross hours worked were recalculated as the elapsed duration between logins and logouts. Net productive hours were computed as gross hours minus the break duration (`break_duration_mins / 60.0`). Leave records were filled with `0.0`.
-5. **Text Standardization**: Standardized text columns (`gender`, `department`, `designation`, `office_location`, `work_mode`, `leave_type`) by trimming whitespace and converting to Title Case.
-6. **Data Export**: Exported the final cleaned dataset as a CSV file to `Datasets/Employee-attendance-and-login-logout-data-bangalore_cleaned.csv`.
+5. **Text Standardization**: Standardized text columns by trimming whitespace and converting to Title Case.
+6. **Feature Engineering (New Columns)**:
+   - **Weighted Attendance Score (`attendance_score`)**: Numerical mapping: `Present = 1.0`, `Half Day = 0.5`, `On Leave = 0.0` for department and location rate aggregation.
+   - **Overtime Bins (`overtime_bin`)**: Groups overtime hours into 0.5-hour step intervals by flooring `overtime_hours * 2` and dividing by `2`.
+   - **Tenure Days (`tenure_days`)**: Calculated dynamically relative to joining date: `(attendance_date - date_of_joining).days`.
+   - **Productivity Ratio (`productivity_ratio`)**: Calculated as `net_productive_hours / total_hours_worked` to measure shift efficiency.
+7. **Cleaned Data Export**: Saved the processed dataset to `Datasets/Employee-attendance-and-login-logout-data-bangalore_cleaned.csv`.
 
 ---
 
-##  Exploratory Data Analysis & Statistical Tests
+## 📈 Exploratory Data Analysis & Statistical Tests
 
 We performed five statistical tests using Python's `scipy.stats` library to evaluate workforce policies, shifts, and campus performance:
 
@@ -120,7 +145,7 @@ We performed five statistical tests using Python's `scipy.stats` library to eval
 
 ---
 
-##  Core Key Performance Indicators (KPIs)
+## 📊 Core Key Performance Indicators (KPIs)
 
 The following metrics are validated and reflected on the executive Looker Studio dashboard:
 
@@ -129,19 +154,20 @@ The following metrics are validated and reflected on the executive Looker Studio
 | **Total Employees** | **980** | Count of unique active employees in Q1 2026. |
 | **Weighted Attendance Rate** | **94.17%** | Present days plus half of the half-days, divided by total records. |
 | **Unweighted Attendance Rate** | **95.24%** | Total active present days (Present + Half Day) divided by total records. |
-| **Avg Hours Worked** | **8.72 hrs** | Gross daily logged-in duration per shift (excl. leaves). |
+| **Avg Hours Worked (Active)** | **9.16 hrs** | Daily logged-in duration per shift on active days (excl. leaves). |
 | **Avg Net Productive Hours** | **7.73 hrs** | true working hours spent on tasks (excl. breaks & leaves). |
 | **Avg Productivity Ratio** | **88.59%** | Efficiency percentage calculated as `Net Productive Hours / Gross Hours`. |
 | **Late Arrival Rate** | **49.63%** | Percentage of shifts where the employee logged in after the shift start. |
 | **Early Exit Rate** | **32.39%** | Percentage of shifts where the employee logged out before the shift end. |
-| **Avg Overtime Hours** | **0.63 hrs** | Average excess hours worked on active overtime shifts. |
-| **WFH Share (Active Shifts)** | **21.31%** | Remote work ratio calculated as `WFH / (WFH + WFO)`. |
+| **Avg Overtime Hours** | **0.63 hrs** | Average excess hours worked on active overtime shifts (OT > 0). |
+| **WFH vs WFO Split KPI** | **21% / 79%** | Remote work ratio calculated as `WFH / (WFH + WFO)`. |
+| **WFH vs WFO (Total Share)** | **20% / 73%** | Share of WFH/WFO relative to all shifts (displayed on dashboard Overview). |
 | **Total On Leave** | **2,635** | Total absenteeism count representing a **4.76%** leave rate. |
 
 ---
 
-##  Project Documentation References
+## 📜 Project Documentation References
 
 Detailed breakdowns are available in the `Report/` directory:
-1. **[Project Development Guide](Report/Project_Development_Guide.md)**: Developer documentation detailing the raw inspection, cleaning scripts, and Scipy implementation.
-2. **[Executive Analytics Report](Report/Executive_Analytics_Report.md)**: Business findings, statistical test outputs, and strategic HR recommendations.
+1. **[Project Development Guide](Report/Project_Development_Guide.md)**: Developer documentation detailing raw inspection, cleaning scripts, and Scipy implementation.
+2. **[Executive Analytics Report](Report/Executive_Analytics_Report.md)**: Business findings, statistical test outputs, dashboard page details, and strategic HR recommendations.
