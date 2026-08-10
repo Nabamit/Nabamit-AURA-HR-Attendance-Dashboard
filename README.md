@@ -171,3 +171,9 @@ The following metrics are validated and reflected on the executive Looker Studio
 Detailed breakdowns are available in the `Report/` directory:
 1. **[Project Development Guide](Report/Project_Development_Guide.md)**: Developer documentation detailing raw inspection, cleaning scripts, and Scipy implementation.
 2. **[Executive Analytics Report](Report/Executive_Analytics_Report.md)**: Business findings, statistical test outputs, dashboard page details, and strategic HR recommendations.
+
+---
+
+## 🎓 Guidance & Acknowledgments
+This project was developed under the guidance and mentorship of **Classroom** and **Sarthoki Das**.
+

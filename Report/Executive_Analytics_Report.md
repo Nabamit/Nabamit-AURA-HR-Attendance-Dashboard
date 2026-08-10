@@ -114,3 +114,9 @@ Based on these findings, we recommend the following HR policy updates:
 2. **Expand Hybrid Work Windows**: Since WFH is statistically proven to reduce late arrivals ($p < 0.001$) and boost net productive hours, formalize a hybrid policy where employees can work remotely on days with critical deliverables or heavy commute constraints.
 3. **Punctuality Focus Areas**: With a 49.63% late arrival rate, HR should implement buffer times or flexible core hours rather than strict punch-in rules, as the high late arrival rate is heavily driven by in-office commute delays.
 4. **Standardize Leave Policies**: Since attendance and leave behaviors are uniform across all campuses ($p = 0.952$), leave guidelines and health wellness programs can be applied centrally at the corporate level rather than customized per site.
+
+---
+
+## 6. Guidance & Acknowledgments
+This analytical research and dashboard implementation was completed under the academic and professional guidance of **Classroom** and **Sarthoki Das**.
+
